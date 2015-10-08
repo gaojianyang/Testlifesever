@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close" >
+
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+			    <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.generate_statistics">true</prop>
+                <prop key="hibernate.connection.release_mode">after_statement</prop>                      
+                <prop key="hibernate.autoReconnect">true</prop>
+                <prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>com/fenghuo/pojo/User.hbm.xml</value>
+				<value>com/fenghuo/pojo/Club.hbm.xml</value>
+				<value>com/fenghuo/pojo/Invitation.hbm.xml</value>
+				<value>com/fenghuo/pojo/Message.hbm.xml</value>
+				<value>com/fenghuo/pojo/Sport.hbm.xml</value>
+				<value>com/fenghuo/pojo/Image.hbm.xml</value></list>
+		</property></bean>
+	
+		
+	<!--  <bean id="transactionManger"
+
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+
+        <property name="sessionFactory">
+
+            <ref bean="sessionFactory" />
+
+        </property>
+
+    </bean> -->	
+
+    <!--   配置事务拦截器
+
+    <bean id="transactionInterceptor"
+
+        class="org.springframework.transaction.interceptor.TransactionInterceptor">
+
+        <property name="transactionManager">
+
+            <ref bean="transactionManger" />
+
+        </property>-->
+
+        <!--   下面定义事务传播属性
+
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+
+    </bean>
+-->
+    <!--  自动代理 
+
+    <bean id="autoBeanNameProxyCreator"
+
+        class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+
+        <property name="beanNames">
+
+            <list>
+
+                <value>*Dao</value>              
+
+               
+
+            </list>
+
+        </property>
+
+        <property name="interceptorNames">
+
+            <list>
+
+                <idref local="transactionInterceptor" />
+
+            </list>
+
+        </property>
+-->
+       
+
+        <!--  这里的配置是必须的，否则无法完成代理的类型转化
+
+        这是使用CGLIB来生成代理
+
+       
+
+        <property name="proxyTargetClass" value="true"/>
+
+    </bean> -->
+		
+		<bean class="org.springframework.orm.hibernate3.HibernateTemplate" id="hibernateTemplate"><property name="sessionFactory" ref="sessionFactory"/></bean>
+<!-- dao -->
+        <bean class="com.fenghuo.dao.UserDao" id="userDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+         <bean class="com.fenghuo.dao.UserUser" id="userUser">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+         <bean class="com.fenghuo.dao.InvitationDao" id="invitationDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+         <bean class="com.fenghuo.dao.ReplyDao" id="replyDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+           <bean class="com.fenghuo.dao.ClubDao" id="clubDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+        <bean class="com.fenghuo.dao.MessageDao" id="messageDao">
+         <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+        <bean class="com.fenghuo.dao.SportDao" id="sportDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/></bean>
+		</beans>
